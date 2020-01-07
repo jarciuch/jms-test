@@ -39,15 +39,51 @@ services:
 #      ACTIVEMQ_MIN_MEMORY: 512
 #      ACTIVEMQ_MAX_MEMORY: 2048
 
-  postgres:
-    image: healthcheck/postgres:alpine
-    ports: ["5432:5432"]
-    volumes: ["postgres-data:/var/lib/postgresql/data"]
-    networks: [backing-services]
+#  postgres:
+#    image: healthcheck/postgres:alpine
+#    ports: ["5432:5432"]
+#    volumes: ["postgres-data:/var/lib/postgresql/data"]
+#    networks: [backing-services]
+#    environment:
+#      POSTGRES_DB: db
+#      POSTGRES_USER: user
+#      POSTGRES_PASSWORD: password
+
+ bank-account-management:
+    image: ${REGISTRY_URL}/banking/bank-account-management-app:${BANKING_SERVICES_VERSION}
     environment:
-      POSTGRES_DB: db
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
+      - TZ=Europe/London
+      - HTTP_PROXY_HOST
+      - HTTP_PROXY_PORT
+      - SPRING_PROFILES_ACTIVE=${ENVIRONMENT_TYPE},${ENVIRONMENT_ID}
+      - BANKING_DATASOURCE_URL
+      - FORM3_ENDPOINT_BASEURL
+      - CONFIGCLIENT_DATASOURCE_URL      
+      - >-
+        _JAVA_OPTIONS=-Dhttps.proxyHost=${HTTP_PROXY_HOST} -Dhttps.proxyPort=${HTTP_PROXY_PORT}
+        -Dhttp.proxyHost=${HTTP_PROXY_HOST} -Dhttp.proxyPort=${HTTP_PROXY_PORT}
+        -Dhttp.nonProxyHosts=${PROXY_BYPASS} -Xmx150M -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8001
+    ports:
+      # debug port
+      - 11422:8001
+    secrets:
+      - BANKING_DATASOURCE_USER
+      - BANKING_DATASOURCE_PWD
+      - CONFIGCLIENT_DATASOURCE_USER
+      - CONFIGCLIENT_DATASOURCE_PWD      
+      - FORM3_ENDPOINT_SECURITY_CLIENTID
+      - FORM3_ENDPOINT_SECURITY_CLIENTSECRET
+    networks:
+      - banking-services-net
+    deploy:
+      update_config:
+        failure_action: continue
+        order: start-first
+      resources:
+        limits:
+          memory: 490M
+        reservations:
+          memory: 450M
 
 volumes:
   activemq-data: {}

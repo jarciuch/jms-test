@@ -9,7 +9,7 @@ ENV https_proxy http://$PROXY_ADDRESS/
 
 RUN apt-get update && apt-get install -yq \
        dnsutils \
-       iputils-ping \
+       iputils-ping \																				
        iputils-tracepath \
        dnsutils \
        coreutils \

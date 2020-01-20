@@ -1,2 +1,2 @@
 activemq:
-  broker-url: tcp://localhost:61616
+  broker-url: tcp://activemq:61616

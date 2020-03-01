@@ -82,6 +82,14 @@
 		</pluginManagement>
 		<plugins>
 			<plugin>
+				<!-- skips the default deploy:deploy goal in the deploy phase -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
@@ -91,5 +99,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>

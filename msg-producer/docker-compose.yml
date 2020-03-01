@@ -1,7 +1,5 @@
 version: "3"
-
 services:
-
   activemq:
     image: rmohr/activemq:5.14.5-alpine
     networks: [backing-services]
@@ -42,13 +40,12 @@ services:
   msg-consumer:
     image: ${REGISTRY_URL}/jms-client/msg-consumer:${MSG_CONSUMER_VERSION}
     environment:
-        - >-
+      - activemq.brokerUrl=tcp://activemq:61616
+      - >-
           _JAVA_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8001
     ports:
       # debug port
       - 15156:8001
-    environment:
-      - AMQ_BROKER_HOST=activemq:61616
     networks:
       - backing-services
       #    deploy:

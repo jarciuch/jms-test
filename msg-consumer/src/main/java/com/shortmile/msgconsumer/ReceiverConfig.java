@@ -32,6 +32,7 @@ public class ReceiverConfig {
     return factory;
   }
 
+  /* Comment */
   @Bean
   public Receiver receiver() {
     return new Receiver();
